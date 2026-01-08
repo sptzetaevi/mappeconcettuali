@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>m_concettuale</title>
+  <title>mappificio</title>
   <style>
     :root { --bg:#f6f7fb; --grid:rgba(0,0,0,.06); --ink:#1a1a1a; }
 
@@ -39,8 +39,8 @@
       font-size:12px; border:1px solid rgba(0,0,0,.2); border-bottom-width:2px;
       padding:1px 6px; border-radius:6px; background:#fafafa;
     }
-    .status{ margin-left:auto; font-size:13px; opacity:.9; white-space:nowrap; }
-    
+    .status{ font-size:13px; opacity:.9; white-space:nowrap; }
+
     .focalQuestionTa{
       width:260px;
       height:62px;
@@ -192,6 +192,33 @@
       user-select: none;
     }
 
+    /* --- LOGO/LINK ALLA HOME ANTIMAPPIFICIO --- */
+    .homeLogo{
+      margin-left: 10px;
+      text-decoration: none;
+    }
+    .homeLogo .logoLetters{
+      width: 40px;
+      height: 40px;
+      border-radius: 999px;
+      border: 2px solid rgba(0,0,0,.25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 14px;
+      letter-spacing: 2px;
+      color: var(--ink);
+      background: #fff;
+      box-shadow: 0 2px 6px rgba(0,0,0,.12);
+      transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+    }
+    .homeLogo:hover .logoLetters{
+      transform: translateY(-1px);
+      box-shadow: 0 4px 10px rgba(0,0,0,.16);
+      border-color: rgba(0,120,255,.6);
+    }
+
   </style>
 </head>
 
@@ -218,9 +245,16 @@
     </span>
     <span class="status" id="status">Avvio...</span>
     <span id="mapTitle">MAPPA CONCETTUALE</span>
+
+    <!-- LOGO/LINK ALLA PAGINA PRINCIPALE -->
+    <a class="homeLogo"
+       href="https://sptzetaevi.github.io/antimappificio/"
+       title="Torna alla pagina principale ANTIMAPPIFICIO">
+      <span class="logoLetters">A&nbsp;M</span>
+    </a>
   </header>
 
-  <!-- Placeholder come suggerimento che sparisce appena si digita -->
+  <!-- Box domanda focale: solo suggerimento, niente popup -->
   <textarea
     id="focalQuestion"
     class="focalQuestionTa"
@@ -901,7 +935,6 @@
   btnZoomIn.addEventListener("click", function(){ zoomAroundCenter(1.15); });
   btnZoomOut.addEventListener("click", function(){ zoomAroundCenter(1/1.15); });
 
-  // inizializzo il box domanda focale (solo placeholder, niente popup)
   if (focalTa) {
     focalTa.addEventListener("input", function () {
       focalQuestion = this.value;
