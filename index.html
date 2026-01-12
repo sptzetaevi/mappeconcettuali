@@ -143,6 +143,13 @@
       text-align:center;
     }
 
+    /* stile del placeholder dentro il POP */
+    .body::placeholder{
+      color:rgba(0,0,0,.45);
+      font-size:12px;
+      text-align:center;
+    }
+
     .linkLine{
       pointer-events:stroke;
       cursor:pointer;
@@ -740,7 +747,10 @@
       el.style.left = p.x + "px";
       el.style.top  = p.y + "px";
 
-      el.innerHTML = '<textarea class="body" spellcheck="false"></textarea>';
+      // QUI il POP con placeholder didattico
+      el.innerHTML = '<textarea class="body" spellcheck="false" ' +
+        'placeholder="Qui concetto chiave senza articoli o aggettivi (✓ NAPOLEONE — ✗ il grande Napoleone)"></textarea>';
+
       var ta = el.querySelector(".body");
       ta.value = p.text || "";
 
