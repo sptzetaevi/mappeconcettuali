@@ -400,7 +400,7 @@
   var linkLabelPromptMsg =
     "Etichetta del collegamento:\n\n" +
     "Scrivi qui un verbo che collega i due concetti.\n" +
-    "Nelle mappe mentali il verbo dovrebbe essere all’indicativo presente (es. considera, organizza, diventa...).";
+    "Nelle mappe concettuali il verbo dovrebbe essere all’indicativo presente (es. considera, organizza, diventa...).";
 
   function applyCamera(){
     world.style.transform = "translate(" + camX + "px," + camY + "px) scale(" + camS + ")";
@@ -526,17 +526,16 @@
 
   /* Cresce ma non si restringe */
   function autoGrow(ta, popModel) {
-    ta.style.height = "auto";
-    var needed = ta.scrollHeight;
-    if (popModel) {
-      if (!popModel.height || needed > popModel.height) {
-        popModel.height = needed;
-      }
-      ta.style.height = popModel.height + "px";
-    } else {
-      ta.style.height = needed + "px";
-    }
+  // sempre ricalcolata in base al contenuto attuale
+  ta.style.height = "auto";
+  var needed = ta.scrollHeight;
+
+  if (popModel) {
+    popModel.height = needed;   // non memorizza più la "massima" ma l'attuale
   }
+
+  ta.style.height = needed + "px";
+}
 
   function createPop(x, y) {
     var p = { id: uid(), x: x, y: y, text: "", height:0 };
@@ -754,11 +753,7 @@
       var ta = el.querySelector(".body");
       ta.value = p.text || "";
 
-      if (typeof p.height === "number" && p.height > 0) {
-        ta.style.height = p.height + "px";
-      } else {
-        autoGrow(ta, p);
-      }
+      autoGrow(ta, p);
 
       if (p.id === selectedBoxId) el.classList.add("selected");
       if (p.id === linkingFrom) el.classList.add("linking");
