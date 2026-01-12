@@ -10,11 +10,33 @@
     html, body { height:100%; margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial; color:var(--ink); }
     #app { height:100%; display:grid; grid-template-rows:auto auto 1fr; }
 
+    /* HEADER con cassetto */
     header{
-      display:flex; gap:10px; flex-wrap:wrap; align-items:center; padding:10px 12px;
-      background:#fff; border-bottom:1px solid rgba(0,0,0,.08);
-      position:sticky; top:0; z-index:10;
+      position:sticky;
+      top:0;
+      z-index:10;
+      background:#fff;
+      border-bottom:1px solid rgba(0,0,0,.08);
+      box-shadow:0 2px 6px rgba(0,0,0,.06);
+      box-sizing:border-box;
     }
+    .headerInner{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+      padding:10px 12px;
+    }
+    .headerHandle{
+      width:100%;
+      height:8px;
+      background:rgba(0,0,0,.20);
+      cursor:pointer;
+    }
+    header.collapsed .headerInner{
+      display:none;
+    }
+
     .btn{
       border:1px solid rgba(0,0,0,.18);
       background:#fff;
@@ -32,6 +54,16 @@
     }
     .btn.danger{ border-color: rgba(200,0,0,.28); }
     .btn.danger:hover{ background: rgba(200,0,0,.06); }
+
+    .btn.tiny{
+      padding:4px 7px;
+      font-size:12px;
+      border-radius:8px;
+    }
+    .btn.tiny.active{
+      border-color: rgba(0,120,255,.7);
+      box-shadow:0 0 0 2px rgba(0,120,255,.22);
+    }
 
     .hint{ font-size:13px; opacity:.75; flex: 1 1 520px; }
     kbd{
@@ -103,7 +135,7 @@
       border:0;
       outline:0;
       resize:none;
-      overflow:hidden;
+      overflow-y:auto;
       background:transparent;
       color:inherit;
       font-size:14px;
@@ -219,39 +251,66 @@
       border-color: rgba(0,120,255,.6);
     }
 
+    /* POPUP COMANDI DA TASTIERA */
+    .modalOverlay{
+      position:fixed; inset:0;
+      background:rgba(0,0,0,.35);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      z-index:9999;
+    }
+    .modal{
+      width:min(420px, 92vw);
+      background:#fff;
+      border:1px solid rgba(0,0,0,.25);
+      border-radius:16px;
+      box-shadow:0 16px 50px rgba(0,0,0,.20);
+      padding:14px;
+    }
+    .modal h3{ margin:0 0 10px 0; font-size:16px; }
+    .modal .actions{ display:flex; gap:10px; justify-content:flex-end; margin-top:12px; }
+
   </style>
 </head>
 
 <body>
 <div id="app">
     
-  <header>
-    <button class="btn" id="btnNew">+ Nuovo pop</button>
-    <button class="btn" id="btnMove">Sposta</button>
-    <button class="btn" id="btnLink">Collega</button>
-    <button class="btn danger" id="btnDelete">Elimina</button>
+  <header id="mainHeader">
+    <div class="headerInner">
+      <button class="btn" id="btnNew">+ Nuovo pop</button>
+      <button class="btn" id="btnMove">Sposta</button>
+      <button class="btn" id="btnLink">Collega</button>
+      <button class="btn danger" id="btnDelete">Elimina</button>
 
-    <button class="btn" id="btnPdf">Esporta PDF</button>
-    <button class="btn" id="btnExportJson">Esporta JSON</button>
-    <button class="btn" id="btnExportHtml">Esporta HTML</button>
-    <button class="btn" id="btnImport">Importa</button>
-    <input id="fileInput" type="file" accept=".json,.html" style="display:none" />
+      <button class="btn" id="btnPdf">Esporta PDF</button>
+      <button class="btn" id="btnExportJson">Esporta JSON</button>
+      <button class="btn" id="btnExportHtml">Esporta HTML</button>
+      <button class="btn" id="btnImport">Importa</button>
+      <input id="fileInput" type="file" accept=".json,.html" style="display:none" />
 
-    <button class="btn" id="btnZoomIn">+</button>
-    <button class="btn" id="btnZoomOut">-</button>
+      <button class="btn tiny" id="btnZoomIn">+</button>
+      <button class="btn tiny" id="btnZoomOut">-</button>
+      <button class="btn tiny" id="btnPan" title="Pan vista">
+        <span aria-hidden="true">✋</span>
+      </button>
+      <button class="btn tiny" id="btnKeyboardHelp">Comandi da tastiera</button>
 
-    <span class="hint">
-      Doppio click = crea • Trascina = sposta • <kbd>L</kbd>/Collega = collega • click linea = seleziona • <kbd>CANC</kbd>/Elimina = elimina • <kbd>ESC</kbd> = annulla
-    </span>
-    <span class="status" id="status">Avvio...</span>
-    <span id="mapTitle">MAPPA CONCETTUALE</span>
+      <span class="hint">
+        Doppio click = crea • Trascina sfondo in modalità Pan = sposta vista • click linea = seleziona • click etichetta linea = modifica • <kbd>CANC</kbd>/Elimina = elimina • <kbd>ESC</kbd> = annulla collega
+      </span>
+      <span class="status" id="status">Avvio...</span>
+      <span id="mapTitle">MAPPA CONCETTUALE</span>
 
-    <!-- LOGO/LINK ALLA PAGINA PRINCIPALE -->
-    <a class="homeLogo"
-       href="https://sptzetaevi.github.io/antimappificio/"
-       title="Torna alla pagina principale ANTIMAPPIFICIO">
-      <span class="logoLetters">A&nbsp;M</span>
-    </a>
+      <!-- LOGO/LINK ALLA PAGINA PRINCIPALE -->
+      <a class="homeLogo"
+         href="https://sptzetaevi.github.io/antimappificio/"
+         title="Torna alla pagina principale ANTIMAPPIFICIO">
+        <span class="logoLetters">A&nbsp;M</span>
+      </a>
+    </div>
+    <div class="headerHandle" id="headerHandle" title="Mostra/nascondi strumenti"></div>
   </header>
 
   <!-- Box domanda focale: solo suggerimento, niente popup -->
@@ -268,6 +327,25 @@
     <div class="ghost">Doppio click sullo sfondo per creare un pop</div>
   </div>
 
+  <!-- BOX COMANDI DA TASTIERA -->
+  <div class="modalOverlay" id="kbdOverlay">
+    <div class="modal">
+      <h3>Comandi da tastiera</h3>
+      <p style="font-size:14px; line-height:1.4; margin:6px 0 10px;">
+        • Doppio click sullo sfondo = crea box<br>
+        • Modalità Pan attiva + trascina sfondo = sposta vista<br>
+        • Click su un box = seleziona box<br>
+        • Click su una linea = seleziona collegamento (per eliminarlo)<br>
+        • Click sull’etichetta di una linea = modifica testo dell’etichetta<br>
+        • <kbd>CANC</kbd>/Elimina = elimina box o collegamento selezionato<br>
+        • <kbd>ESC</kbd> = annulla modalità collega
+      </p>
+      <div class="actions">
+        <button class="btn tiny" id="btnKbdClose">Chiudi</button>
+      </div>
+    </div>
+  </div>
+
 <script>
 (function () {
   var board = document.getElementById("board");
@@ -275,6 +353,17 @@
   var world = document.getElementById("world");
   var statusEl = document.getElementById("status");
   var focalTa = document.getElementById("focalQuestion");
+
+  var header = document.getElementById("mainHeader");
+  var headerHandle = document.getElementById("headerHandle");
+  var headerCollapsed = false;
+
+  headerHandle.addEventListener("click", function(e){
+    e.stopPropagation();
+    headerCollapsed = !headerCollapsed;
+    if (headerCollapsed) header.classList.add("collapsed");
+    else header.classList.remove("collapsed");
+  });
 
   var btnNew = document.getElementById("btnNew");
   var btnLink = document.getElementById("btnLink");
@@ -284,6 +373,10 @@
   var btnExportHtml = document.getElementById("btnExportHtml");
   var btnImport = document.getElementById("btnImport");
   var btnMove = document.getElementById("btnMove");
+  var btnPan = document.getElementById("btnPan");
+  var btnKeyboardHelp = document.getElementById("btnKeyboardHelp");
+  var kbdOverlay = document.getElementById("kbdOverlay");
+  var btnKbdClose = document.getElementById("btnKbdClose");
   var fileInput = document.getElementById("fileInput");
   var btnZoomIn = document.getElementById("btnZoomIn");
   var btnZoomOut = document.getElementById("btnZoomOut");
@@ -292,12 +385,13 @@
   function uid(){ return Math.random().toString(36).slice(2, 10); }
   function boardRect(){ return board.getBoundingClientRect(); }
 
-  var pops = [];   // {id,x,y,text}
+  var pops = [];   // {id,x,y,text,height}
   var links = [];  // {id,from,to,label}
   var selectedBoxId = null;
   var selectedLinkId = null;
   var linkingFrom = null;
   var moveMode = false;
+  var panMode = false;
   var focalQuestion = "";
 
   var camX = 0;
@@ -401,6 +495,7 @@
 
     if (moveMode) {
       setLinkMode(false);
+      setPanMode(false);
       btnMove.classList.add("active");
       setStatus("Modalita sposta: trascina i box.");
     } else {
@@ -413,14 +508,34 @@
       tas[i].readOnly = moveMode;
     }
   }
-  
-  function autoGrow(ta) {
+
+  function setPanMode(on){
+    panMode = !!on;
+    if (panMode){
+      btnPan.classList.add("active");
+      setStatus("Modalità Pan: trascina lo sfondo per spostarti.");
+    } else {
+      btnPan.classList.remove("active");
+      setStatus("Pronto");
+    }
+  }
+
+  /* Cresce ma non si restringe */
+  function autoGrow(ta, popModel) {
     ta.style.height = "auto";
-    ta.style.height = ta.scrollHeight + "px";
+    var needed = ta.scrollHeight;
+    if (popModel) {
+      if (!popModel.height || needed > popModel.height) {
+        popModel.height = needed;
+      }
+      ta.style.height = popModel.height + "px";
+    } else {
+      ta.style.height = needed + "px";
+    }
   }
 
   function createPop(x, y) {
-    var p = { id: uid(), x: x, y: y, text: "" };
+    var p = { id: uid(), x: x, y: y, text: "", height:0 };
     pops.push(p);
     render();
     selectBox(p.id);
@@ -628,7 +743,12 @@
       el.innerHTML = '<textarea class="body" spellcheck="false"></textarea>';
       var ta = el.querySelector(".body");
       ta.value = p.text || "";
-      autoGrow(ta);
+
+      if (typeof p.height === "number" && p.height > 0) {
+        ta.style.height = p.height + "px";
+      } else {
+        autoGrow(ta, p);
+      }
 
       if (p.id === selectedBoxId) el.classList.add("selected");
       if (p.id === linkingFrom) el.classList.add("linking");
@@ -641,7 +761,7 @@
 
       ta.addEventListener("input", function (e) {
         p.text = e.target.value;
-        autoGrow(ta);
+        autoGrow(ta, p);
         renderLinks();
       });
 
@@ -832,7 +952,11 @@
     board.setPointerCapture(e.pointerId);
 
     if (pointers.size === 1) {
-      panStart = { x:e.clientX, y:e.clientY, camX:camX, camY:camY };
+      if (!panMode) {
+        panStart = null;
+      } else {
+        panStart = { x:e.clientX, y:e.clientY, camX:camX, camY:camY };
+      }
     } else if (pointers.size === 2) {
       var arr = Array.from(pointers.values());
       pinchStartDist = dist(arr[0], arr[1]);
@@ -889,6 +1013,30 @@
     if (pointers.size === 0) panStart = null;
   }, { passive:true });
 
+  /* Zoom con CTRL + rotellina, come nell'altra pagina */
+  board.addEventListener("wheel", function(e){
+    if (!e.ctrlKey) return;
+    e.preventDefault();
+
+    var before = screenToWorld(e.clientX, e.clientY);
+    var factor = (e.deltaY < 0) ? 1.08 : 0.92;
+
+    var newS = camS * factor;
+    if (newS < 0.25) newS = 0.25;
+    if (newS > 4.0) newS = 4.0;
+    camS = newS;
+
+    var br = boardRect();
+    var sx = e.clientX - br.left;
+    var sy = e.clientY - br.top;
+
+    camX = sx - before.x * camS;
+    camY = sy - before.y * camS;
+
+    applyCamera();
+    renderLinks();
+  }, { passive:false });
+
   board.addEventListener("mousedown", function (e) {
     if (e.target === board) {
       clearSelections();
@@ -911,7 +1059,6 @@
       var inEditor = active && active.tagName === "TEXTAREA";
       if (!inEditor) { e.preventDefault(); deleteSelected(); }
     }
-    if (key === "l") { linkingFrom ? setLinkMode(false) : setLinkMode(true); }
     if (key === "escape") setLinkMode(false);
   });
 
@@ -927,6 +1074,15 @@
   btnDelete.addEventListener("click", deleteSelected);
   btnMove.addEventListener("click", function () { setMoveMode(!moveMode); });
 
+  btnPan.addEventListener("click", function () {
+    var newOn = !panMode;
+    if (newOn) {
+      setMoveMode(false);
+      setLinkMode(false);
+    }
+    setPanMode(newOn);
+  });
+
   btnPdf.addEventListener("click", exportPDF);
   btnExportJson.addEventListener("click", exportJSON);
   btnExportHtml.addEventListener("click", exportHTML);
@@ -940,6 +1096,19 @@
       focalQuestion = this.value;
     });
   }
+
+  /* Apertura/chiusura box "Comandi da tastiera" */
+  btnKeyboardHelp.addEventListener("click", function(){
+    kbdOverlay.style.display = "flex";
+  });
+  btnKbdClose.addEventListener("click", function(){
+    kbdOverlay.style.display = "none";
+  });
+  kbdOverlay.addEventListener("click", function(e){
+    if (e.target === kbdOverlay) {
+      kbdOverlay.style.display = "none";
+    }
+  });
 
   render();
   setStatus("Pronto");
