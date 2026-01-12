@@ -65,12 +65,6 @@
       box-shadow:0 0 0 2px rgba(0,120,255,.22);
     }
 
-    .hint{ font-size:13px; opacity:.75; flex: 1 1 520px; }
-    kbd{
-      font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
-      font-size:12px; border:1px solid rgba(0,0,0,.2); border-bottom-width:2px;
-      padding:1px 6px; border-radius:6px; background:#fafafa;
-    }
     .status{ font-size:13px; opacity:.9; white-space:nowrap; }
 
     .focalQuestionTa{
@@ -310,7 +304,7 @@
     <div class="headerHandle" id="headerHandle" title="Mostra/nascondi strumenti"></div>
   </header>
 
-  <!-- Box domanda focale: solo suggerimento, niente popup -->
+  <!-- Box domanda focale -->
   <textarea
     id="focalQuestion"
     class="focalQuestionTa"
@@ -394,6 +388,12 @@
   var camX = 0;
   var camY = 0;
   var camS = 1;
+
+  // Messaggio con suggerimento per il verbo del collegamento
+  var linkLabelPromptMsg =
+    "Etichetta del collegamento:\n\n" +
+    "Scrivi qui un verbo che collega i due concetti.\n" +
+    "Nelle mappe mentali il verbo dovrebbe essere all’indicativo presente (es. considera, organizza, diventa...).";
 
   function applyCamera(){
     world.style.transform = "translate(" + camX + "px," + camY + "px) scale(" + camS + ")";
@@ -682,7 +682,10 @@
 
           for (var k = 0; k < links.length; k++) {
             if (links[k].id === id) {
-              var nuovo = prompt("Etichetta del collegamento:", links[k].label || "");
+              var nuovo = prompt(
+                linkLabelPromptMsg,
+                links[k].label || ""
+              );
               if (nuovo !== null) links[k].label = nuovo;
               break;
             }
@@ -767,7 +770,10 @@
           addLink(linkingFrom, p.id);
 
           var last = links[links.length - 1];
-          var t = prompt("Etichetta del collegamento:", "");
+          var t = prompt(
+            linkLabelPromptMsg,
+            ""
+          );
           if (t !== null) last.label = t;
 
           setLinkMode(false);
@@ -943,7 +949,6 @@
   }
 
   board.addEventListener("pointerdown", function(e){
-    // QUI LA CORREZIONE: blocco solo se clicco su un box, NON sullo svg
     if (e.target && e.target.closest && e.target.closest(".pop")) return;
 
     pointers.set(e.pointerId, { x:e.clientX, y:e.clientY });
@@ -1011,7 +1016,7 @@
     if (pointers.size === 0) panStart = null;
   }, { passive:true });
 
-  /* Zoom con CTRL + rotellina, come nell'altra pagina */
+  /* Zoom con CTRL + rotellina */
   board.addEventListener("wheel", function(e){
     if (!e.ctrlKey) return;
     e.preventDefault();
