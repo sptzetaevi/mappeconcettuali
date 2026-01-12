@@ -391,10 +391,13 @@
   var moveMode = false;
   var panMode = false;
   var focalQuestion = "";
+  
 
   var camX = 0;
   var camY = 0;
   var camS = 1;
+  
+  var MAX_PLACEHOLDER_POPS = 3;
 
   // Messaggio con suggerimento per il verbo del collegamento
   var linkLabelPromptMsg =
@@ -739,16 +742,23 @@
     var ghost = board.querySelector(".ghost");
     if (ghost) ghost.style.display = pops.length ? "none" : "flex";
 
-    pops.forEach(function (p) {
-      var el = document.createElement("div");
-      el.className = "pop";
-      el.dataset.id = p.id;
-      el.style.left = p.x + "px";
-      el.style.top  = p.y + "px";
+    pops.forEach(function (p, idx) {
+     var el = document.createElement("div");
+     el.className = "pop";
+     el.dataset.id = p.id;
+     el.style.left = p.x + "px";
+     el.style.top  = p.y + "px";
 
-      // QUI il POP con placeholder didattico
-      el.innerHTML = '<textarea class="body" spellcheck="false" ' +
-        'placeholder="Qui concetto chiave senza articoli o aggettivi (✓ NAPOLEONE — ✗ il grande Napoleone)"></textarea>';
+     // Mostra il placeholder solo per i primi MAX_PLACEHOLDER_POPS
+     var placeholderText =
+    'placeholder="Scrivi un concetto chiave senza articoli o aggettivi (SI: NAPOLEONE — NO: Il grande NAPOLEONE)"';
+
+     var placeholderAttr = (idx < MAX_PLACEHOLDER_POPS) ? placeholderText : "";
+
+     el.innerHTML =
+      '<textarea class="body" spellcheck="false" ' +
+       placeholderAttr +
+     '></textarea>';
 
       var ta = el.querySelector(".body");
       ta.value = p.text || "";
