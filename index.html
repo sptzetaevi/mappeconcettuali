@@ -586,17 +586,6 @@
     if (el) el.focus();
 }
 
-    pops.push(p);
-    render();
-
-    // 👉 MOSTRA IL SUGGERIMENTO SOLO QUANDO SI CREA UN NUOVO POP
-    setStatus("Suggerimento: scrivi un concetto chiave senza articoli o aggettivi (es. SI: Napoleone — NO: il grande Napoleone).");
-
-    selectBox(p.id);
-    var el = document.querySelector('[data-id="' + p.id + '"] .body');
-    if (el) el.focus();
-  }
-
   function addLink(from, to) {
     if (!from || !to || from === to) return;
     for (var i = 0; i < links.length; i++) {
