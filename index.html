@@ -795,9 +795,9 @@
      var placeholderAttr = (idx < MAX_PLACEHOLDER_POPS) ? placeholderText : "";
 
      el.innerHTML =
-      '<textarea class="body" spellcheck="false" ' +
-       placeholderAttr +
-     '></textarea>';
+      '<textarea class="body" spellcheck="false" rows="1" ' +
+      placeholderAttr +
+      '></textarea>';
 
       var ta = el.querySelector(".body");
       ta.value = p.text || "";
