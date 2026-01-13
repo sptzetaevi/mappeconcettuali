@@ -527,41 +527,69 @@
     }
   }
 
-  function autoGrow(ta, popModel) {
-   // reset per calcolare bene lo scrollHeight
-   ta.style.height = "auto";
+    function autoGrow(ta, popModel) {
+    // --- ALTEZZA ---
 
-   // calcolo dell'altezza di UNA riga
-   var computed = window.getComputedStyle(ta);
-   var lineH = parseFloat(computed.lineHeight);
-   if (isNaN(lineH)) {
-     lineH = parseFloat(computed.fontSize) * 1.25 || 18; // fallback
-   }
+    // reset per calcolare bene lo scrollHeight
+    ta.style.height = "auto";
 
-   var txt = ta.value || "";
-   var needed;
+    var computed = window.getComputedStyle(ta);
+    var lineH = parseFloat(computed.lineHeight);
+    if (isNaN(lineH)) {
+      lineH = parseFloat(computed.fontSize) * 1.25 || 18; // fallback
+    }
 
-   if (!txt.trim()) {
-    // POP vuoto
-    if (popModel && popModel.bigIntro) {
-      // solo il PRIMO pop può nascere a 4 righe
-      needed = lineH * 4;
-     } else {
-       // tutti gli altri (e il primo dopo l’uso) = una riga sola
-       needed = lineH;
-     }
-   } else {
-     // c'è testo → altezza minima che permette di leggere tutto
-     needed = ta.scrollHeight;
-     if (needed < lineH) needed = lineH;
-   }
+    var txt = ta.value || "";
+    var hNeeded;
 
-   if (popModel) {
-     popModel.height = needed;
-   }
+    if (!txt.trim()) {
+      // POP vuoto
+      if (popModel && popModel.bigIntro) {
+        // solo il PRIMO pop può nascere a 4 righe
+        hNeeded = lineH * 4;
+      } else {
+        // tutti gli altri (e il primo dopo l’uso) = una riga sola
+        hNeeded = lineH;
+      }
+    } else {
+      // c'è testo → altezza minima che permette di leggere tutto
+      hNeeded = ta.scrollHeight;
+      if (hNeeded < lineH) hNeeded = lineH;
+    }
 
-   ta.style.height = needed + "px";
- }
+    if (popModel) {
+      popModel.height = hNeeded;
+    }
+    ta.style.height = hNeeded + "px";
+
+    // --- LARGHEZZA ---
+
+    // togliamo vincoli momentanei per misurare
+    ta.style.width = "auto";
+    var popEl = ta.parentElement;
+
+    if (popEl && popEl.classList.contains("pop")) {
+      popEl.style.width = "auto";
+
+      var fontSize = parseFloat(computed.fontSize) || 14;
+      var charW = fontSize * 0.6;     // larghezza media di un carattere
+
+      var minChars = 8;               // minimo ~ 8 caratteri (parola da 5 + margine)
+      var maxChars = 48;              // massimo, come prima
+
+      var minW = minChars * charW + 16;   // + padding bordo
+      var maxW = maxChars * charW + 16;
+
+      // larghezza naturale del contenuto
+      var contentW = ta.scrollWidth + 4;
+
+      var wNeeded = contentW;
+      if (wNeeded < minW) wNeeded = minW;
+      if (wNeeded > maxW) wNeeded = maxW;
+
+      popEl.style.width = wNeeded + "px";
+    }
+  }
 
     function createPop(x, y) {
     // è il primo POP della mappa?
