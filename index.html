@@ -527,64 +527,41 @@
     }
   }
 
-    function autoGrow(ta, popModel) {
-  // --- ALTEZZA ---
+  function autoGrow(ta, popModel) {
+   // reset per calcolare bene lo scrollHeight
+   ta.style.height = "auto";
 
-  // reset per calcolare bene lo scrollHeight
-  ta.style.height = "auto";
+   // calcolo dell'altezza di UNA riga
+   var computed = window.getComputedStyle(ta);
+   var lineH = parseFloat(computed.lineHeight);
+   if (isNaN(lineH)) {
+     lineH = parseFloat(computed.fontSize) * 1.25 || 18; // fallback
+   }
 
-  // stile calcolato
-  var computed = window.getComputedStyle(ta);
-  var lineH = parseFloat(computed.lineHeight);
-  if (isNaN(lineH)) {
-    lineH = parseFloat(computed.fontSize) * 1.25 || 18; // fallback
-  }
+   var txt = ta.value || "";
+   var needed;
 
-  // testo attuale
-  var txt = ta.value || "";
-
-  var hNeeded;
-
-  if (!txt.trim()) {
+   if (!txt.trim()) {
     // POP vuoto
     if (popModel && popModel.bigIntro) {
       // solo il PRIMO pop può nascere a 4 righe
-      hNeeded = lineH * 4;
-    } else {
-      // tutti gli altri (e il primo dopo l’uso) = una riga sola
-      hNeeded = lineH;
-    }
-  } else {
-    // c'è testo → altezza minima che permette di leggere tutto
-    hNeeded = ta.scrollHeight;
-    if (hNeeded < lineH) hNeeded = lineH;
-  }
+      needed = lineH * 4;
+     } else {
+       // tutti gli altri (e il primo dopo l’uso) = una riga sola
+       needed = lineH;
+     }
+   } else {
+     // c'è testo → altezza minima che permette di leggere tutto
+     needed = ta.scrollHeight;
+     if (needed < lineH) needed = lineH;
+   }
 
-  if (popModel) {
-    popModel.height = hNeeded;
-  }
-  ta.style.height = hNeeded + "px";
+   if (popModel) {
+     popModel.height = needed;
+   }
 
-  // --- LARGHEZZA ---
-
-  var popEl = ta.parentElement;
-  if (!popEl || !popEl.classList.contains("pop")) return;
-
-  // stimiamo la larghezza in base al numero di caratteri del testo
-  var fontSize = parseFloat(computed.fontSize) || 14;
-  var charW = fontSize * 0.6;        // larghezza media di un carattere
-
-  var minChars = 8;                  // larghezza minima (parola corta + margine)
-  var maxChars = 48;                 // massimo, come il max-width in ch
-
-  var charCount = txt.length;
-  if (charCount < minChars) charCount = minChars;
-  if (charCount > maxChars) charCount = maxChars;
-
-  var wNeeded = charCount * charW + 24; // + padding e bordi
-
-  popEl.style.width = wNeeded + "px";
-}
+   ta.style.height = needed + "px";
+ }
 
     function createPop(x, y) {
     // è il primo POP della mappa?
