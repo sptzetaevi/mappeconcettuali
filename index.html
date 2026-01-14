@@ -541,8 +541,7 @@
   }
 
   // testo attuale
-  var txt = (ta.value || "").replace(/\s+$/g, ""); // tolgo spazi/a capo finali
-  ta.value = txt; // mantengo la versione "pulita" nella textarea
+  var txt = ta.value || "";
 
   var hNeeded;
 
