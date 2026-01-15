@@ -103,27 +103,6 @@
       pointer-events:auto;
     }
 
-    .pop{
-      position:absolute;
-      min-width:8ch;   /* 👈 NUOVO: si adatta ma non diventa microscopico */
-      max-width:48ch;
-      background:#fff;
-      border:1px solid rgba(0,0,0,.55);
-      border-radius:14px;
-      box-shadow:0 8px 24px rgba(0,0,0,.10);
-      padding:8px 8px 8px 8px;
-      box-sizing:border-box;
-      user-select:none;
-      cursor:grab;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      touch-action: none;
-    }
-    .pop:active{ cursor:grabbing; }
-    .pop.selected{ outline:3px solid rgba(0,120,255,.25); }
-    .pop.linking{ background:rgba(0,120,255,.08)!important; border-color:rgba(0,120,255,.35)!important; }
-
    .pop{
       position:absolute;
       /* niente width fissa! */
