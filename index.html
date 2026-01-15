@@ -124,24 +124,25 @@
     .pop.selected{ outline:3px solid rgba(0,120,255,.25); }
     .pop.linking{ background:rgba(0,120,255,.08)!important; border-color:rgba(0,120,255,.35)!important; }
 
-    .body{
-      width:100%;
-      border:0;
-      outline:0;
-      resize:none;
-      overflow-y:auto;
-      background:transparent;
-      color:inherit;
-      font-size:14px;
-      line-height:1.25;
-      padding:0;
-      margin:0;
+   .pop{
+      position:absolute;
+      /* niente width fissa! */
+      min-width:5ch;      /* stringe molto di più: puoi provare 4ch o 3ch se vuoi ancora più stretto */
+      max-width:48ch;
+      background:#fff;
+      border:1px solid rgba(0,0,0,.55);
+      border-radius:14px;
+      box-shadow:0 8px 24px rgba(0,0,0,.10);
+      padding:10px;
       box-sizing:border-box;
-      min-height:1.25em;
-      white-space:pre-wrap;
-      word-break:break-word;
-      text-align:center;
-    }
+      user-select:none;
+      cursor:grab;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      touch-action: none;
+      pointer-events:auto;
+}
 
     /* stile del placeholder dentro il POP */
     .body::placeholder{
