@@ -27,12 +27,11 @@
       align-items:center;
       padding:10px 12px;
     }
-
-    /* Maniglia ingrandita con frecce */
+    /* Maniglia-cassetto ingrandita con frecce */
     .headerHandle{
       width:100%;
-      height:20px;
-      background:rgba(0,0,0,.20);
+      height:20px;                       /* piu alta */
+      background:rgba(0,0,0,.18);        /* un po' piu visibile */
       cursor:pointer;
       display:flex;
       align-items:center;
@@ -40,13 +39,12 @@
       position:relative;
     }
     .headerHandle::before{
-      content:"▲ ▼";
+      content:"▲ ▼";                     /* frecce su/giu */
       font-size:11px;
       letter-spacing:3px;
       color:#f5f5f5;
       opacity:0.9;
     }
-
     header.collapsed .headerInner{
       display:none;
     }
@@ -95,14 +93,13 @@
     }
 
     #board{
-      position:relative; 
-      overflow:hidden;
+      position:relative; overflow:hidden;
       background:
         linear-gradient(var(--bg), var(--bg)),
         repeating-linear-gradient(0deg, transparent, transparent 23px, var(--grid) 24px),
         repeating-linear-gradient(90deg, transparent, transparent 23px, var(--grid) 24px);
-      touch-action:none;
     }
+    #board{ touch-action:none; }
 
     #world{
       position:absolute;
@@ -120,7 +117,7 @@
 
     .pop{
       position:absolute;
-      min-width:8ch;
+      min-width:8ch;   /* 👈 NUOVO: si adatta ma non diventa microscopico */
       max-width:48ch;
       background:#fff;
       border:1px solid rgba(0,0,0,.55);
@@ -158,6 +155,7 @@
       text-align:center;
     }
 
+    /* stile del placeholder dentro il POP */
     .body::placeholder{
       color:rgba(0,0,0,.45);
       font-size:12px;
@@ -182,64 +180,65 @@
       font-size:14px; opacity:.55;
     }
 
-    /* Controlli flottanti agganciati all'area dei POP (in alto) */
+    
+    /* Controlli flottanti in basso a destra/sinistra */
     #controlsRight {
-      position:absolute;
-      top:10px;
-      right:20px;
-      display:flex;
-      flex-direction:column;
-      gap:8px;
-      z-index:20;
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      z-index: 999;
     }
 
     #controlsLeft {
-      position:absolute;
-      top:10px;
-      left:20px;
-      display:flex;
-      flex-direction:column;
-      gap:8px;
-      z-index:20;
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      z-index: 999;
     }
 
     #controlsRight .btn,
     #controlsLeft .btn {
-      pointer-events:auto;
+      pointer-events: auto;
     }
 
     /* Ingrandisco i pulsanti flottanti +, - e ✋ */
     #controlsRight .btn.tiny {
-      padding:8px 12px;
-      font-size:15px;
-      border-radius:12px;
-      min-width:40px;
+      padding: 8px 12px;
+      font-size: 15px;
+      border-radius: 12px;
+      min-width: 40px;
     }
 
     /* Pan flottante ben visibile quando attivo */
     #btnPan_f.active {
-      background:rgba(0,120,255,.12);
-      border-color:rgba(0,120,255,.8);
-      box-shadow:0 0 0 3px rgba(0,120,255,.25);
+      background: rgba(0,120,255,.12);
+      border-color: rgba(0,120,255,.8);
+      box-shadow: 0 0 0 3px rgba(0,120,255,.25);
     }
 
     /* Sposta flottante ben visibile quando attivo */
     #btnMove_f.active {
-      background:rgba(0,120,255,.12);
-      border-color:rgba(0,120,255,.8);
-      box-shadow:0 0 0 3px rgba(0,120,255,.25);
+      background: rgba(0,120,255,.12);
+      border-color: rgba(0,120,255,.8);
+      box-shadow: 0 0 0 3px rgba(0,120,255,.25);
     }
 
-    /* Nascondo i vecchi bottoni di salvataggio/pan/move/link nel header */
+    /* Nascondo i bottoni originali nell'header, ma li tengo nel DOM per riusare la logica JS */
     #btnZoomIn,
     #btnZoomOut,
     #btnPan,
     #btnMove,
     #btnLink {
-      display:none !important;
+      display: none !important;
     }
 
-    @media print {
+@media print {
       header { display:none !important; }
       .ghost { display:none !important; }
 
@@ -296,6 +295,7 @@
       user-select: none;
     }
 
+    /* --- LOGO/LINK ALLA HOME ANTIMAPPIFICIO --- */
     .homeLogo{
       margin-left: 10px;
       text-decoration: none;
@@ -322,7 +322,7 @@
       border-color: rgba(0,120,255,.6);
     }
 
-    /* POPUP COMANDI / SALVATAGGIO */
+    /* POPUP COMANDI DA TASTIERA */
     .modalOverlay{
       position:fixed; inset:0;
       background:rgba(0,0,0,.35);
@@ -341,27 +341,6 @@
     }
     .modal h3{ margin:0 0 10px 0; font-size:16px; }
     .modal .actions{ display:flex; gap:10px; justify-content:flex-end; margin-top:12px; }
-    .modal .row{ display:flex; flex-wrap:wrap; gap:10px; margin:8px 0; }
-    .modal .row label{ display:flex; align-items:center; gap:6px; font-size:14px; }
-
-    /* Pulsante doppio Salva rapido / Opzioni salvataggio */
-    .saveSplit{
-      display:inline-flex;
-      flex-direction:column;
-      margin:0 6px;
-    }
-    .saveSplit .btn{
-      padding:4px 10px;
-      font-size:12px;
-      border-radius:0;
-    }
-    .saveSplit .btn.saveTop{
-      border-radius:10px 10px 0 0;
-      border-bottom-width:0;
-    }
-    .saveSplit .btn.saveBottom{
-      border-radius:0 0 10px 10px;
-    }
 
   </style>
 </head>
@@ -377,17 +356,8 @@
       <button class="btn danger" id="btnDelete">Elimina</button>
 
       <button class="btn" id="btnPdf">Stampa in PDF</button>
-
-      <!-- Pulsante doppio -->
-      <div class="saveSplit">
-        <button class="btn saveTop" id="btnQuickSave">
-          <span>Salva rapido</span>
-        </button>
-        <button class="btn saveBottom" id="btnSaveOptions">
-          <span>Opzioni salvataggio</span>
-        </button>
-      </div>
-
+      <button class="btn" id="btnExportJson">Salva in JSON</button>
+      <button class="btn" id="btnExportHtml">Salva in HTML</button>
       <button class="btn" id="btnImport">Importa HTML/JSON</button>
       <input id="fileInput" type="file" accept=".json,.html" style="display:none" />
 
@@ -401,6 +371,7 @@
       <span class="status" id="status">Avvio...</span>
       <span id="mapTitle">MAPPA CONCETTUALE</span>
 
+      <!-- LOGO/LINK ALLA PAGINA PRINCIPALE -->
       <a class="homeLogo"
          href="https://sptzetaevi.github.io/antimappificio/"
          title="Torna alla pagina principale ANTIMAPPIFICIO">
@@ -422,18 +393,6 @@
       <svg id="wires"></svg>
     </div>
     <div class="ghost">Doppio click sullo sfondo per creare un pop</div>
-
-    <!-- Controlli flottanti dentro l'area mappa -->
-    <div id="controlsLeft">
-      <button class="btn" id="btnMove_f">Sposta</button>
-      <button class="btn" id="btnLink_f">Collega</button>
-    </div>
-
-    <div id="controlsRight">
-      <button class="btn tiny" id="btnZoomIn_f">+</button>
-      <button class="btn tiny" id="btnZoomOut_f">-</button>
-      <button class="btn tiny" id="btnPan_f" title="Pan vista">✋</button>
-    </div>
   </div>
 
   <!-- BOX COMANDI DA TASTIERA -->
@@ -455,35 +414,16 @@
     </div>
   </div>
 
-  <!-- PANNELLO OPZIONI SALVATAGGIO -->
-  <div class="modalOverlay" id="saveOverlay">
-    <div class="modal">
-      <h3>Opzioni di salvataggio</h3>
-      <div class="row">
-        <label>
-          <input type="radio" name="saveFormat" value="json" checked>
-          JSON (dati della mappa)
-        </label>
-        <label>
-          <input type="radio" name="saveFormat" value="html">
-          HTML (pagina con file incorporato)
-        </label>
-      </div>
-      <div class="row">
-        <label style="flex:1; flex-direction:column; align-items:flex-start;">
-          <span>Nome file:</span>
-          <input type="text" id="saveFileName"
-                 style="width:100%; margin-top:4px; padding:4px 6px; font-size:14px; box-sizing:border-box;">
-        </label>
-      </div>
-      <p style="font-size:12px; opacity:0.8; margin:4px 0 0;">
-        Puoi scrivere il nome senza estensione: verrà aggiunta automaticamente (.json o .html).
-      </p>
-      <div class="actions">
-        <button class="btn tiny" id="btnSaveCancel">Annulla</button>
-        <button class="btn tiny" id="btnSaveConfirm">Salva</button>
-      </div>
-    </div>
+  <!-- Nuovi controlli flottanti -->
+  <div id="controlsLeft">
+    <button class="btn" id="btnMove_f">Sposta</button>
+    <button class="btn" id="btnLink_f">Collega</button>
+  </div>
+
+  <div id="controlsRight">
+    <button class="btn tiny" id="btnZoomIn_f">+</button>
+    <button class="btn tiny" id="btnZoomOut_f">-</button>
+    <button class="btn tiny" id="btnPan_f" title="Pan vista">✋</button>
   </div>
 
 <script>
@@ -509,6 +449,8 @@
   var btnLink = document.getElementById("btnLink");
   var btnDelete = document.getElementById("btnDelete");
   var btnPdf = document.getElementById("btnPdf");
+  var btnExportJson = document.getElementById("btnExportJson");
+  var btnExportHtml = document.getElementById("btnExportHtml");
   var btnImport = document.getElementById("btnImport");
   var btnMove = document.getElementById("btnMove");
   var btnPan = document.getElementById("btnPan");
@@ -519,30 +461,18 @@
   var btnZoomIn = document.getElementById("btnZoomIn");
   var btnZoomOut = document.getElementById("btnZoomOut");
 
-  // Bottoni flottanti
+  // Bottoni flottanti in basso (come nella mappa mentale)
   var btnZoomIn_f  = document.getElementById("btnZoomIn_f");
   var btnZoomOut_f = document.getElementById("btnZoomOut_f");
   var btnPan_f     = document.getElementById("btnPan_f");
   var btnMove_f    = document.getElementById("btnMove_f");
   var btnLink_f    = document.getElementById("btnLink_f");
 
-  // Nuovi pulsanti salvataggio
-  var btnQuickSave    = document.getElementById("btnQuickSave");
-  var btnSaveOptions  = document.getElementById("btnSaveOptions");
-  var saveOverlay     = document.getElementById("saveOverlay");
-  var saveFileNameInp = document.getElementById("saveFileName");
-  var btnSaveCancel   = document.getElementById("btnSaveCancel");
-  var btnSaveConfirm  = document.getElementById("btnSaveConfirm");
-
-  // stato ultimo salvataggio
-  var lastSaveBaseName = "";
-  var lastSaveFormat   = "json";
-
   function setStatus(msg){ statusEl.textContent = msg; }
   function uid(){ return Math.random().toString(36).slice(2, 10); }
   function boardRect(){ return board.getBoundingClientRect(); }
 
-  var pops = [];   // {id,x,y,text,height,bigIntro}
+  var pops = [];   // {id,x,y,text,height}
   var links = [];  // {id,from,to,label}
   var selectedBoxId = null;
   var selectedLinkId = null;
@@ -550,12 +480,15 @@
   var moveMode = false;
   var panMode = false;
   var focalQuestion = "";
-  var MAX_PLACEHOLDER_POPS = 1;
+  
 
   var camX = 0;
   var camY = 0;
   var camS = 1;
+  
+  var MAX_PLACEHOLDER_POPS = 1;
 
+  // Messaggio con suggerimento per il verbo del collegamento
   var linkLabelPromptMsg =
     "Etichetta del collegamento:\n\n" +
     "Scrivi qui un verbo che collega i due concetti.\n" +
@@ -636,9 +569,13 @@
   function setLinkMode(on) {
     if (on) {
       if (moveMode) setMoveMode(false);
+      if (panMode) setPanMode(false);
       if (!selectedBoxId) { setStatus("Seleziona un box prima di collegare."); return; }
+
       linkingFrom = selectedBoxId;
       btnLink.classList.add("active");
+      if (btnLink_f) btnLink_f.classList.add("active");
+
       var a = document.querySelectorAll(".pop");
       for (var i=0;i<a.length;i++) {
         a[i].classList.toggle("linking", a[i].dataset.id === linkingFrom);
@@ -647,6 +584,8 @@
     } else {
       linkingFrom = null;
       btnLink.classList.remove("active");
+      if (btnLink_f) btnLink_f.classList.remove("active");
+
       var b = document.querySelectorAll(".pop");
       for (var j=0;j<b.length;j++) b[j].classList.remove("linking");
       setStatus("Pronto");
@@ -679,7 +618,7 @@
     if (panMode){
       btnPan.classList.add("active");
       if (btnPan_f) btnPan_f.classList.add("active");
-      setStatus("Modalità Pan: trascina lo sfondo per spostarti.");
+      setStatus("Modalita Pan: trascina lo sfondo per spostarti.");
     } else {
       btnPan.classList.remove("active");
       if (btnPan_f) btnPan_f.classList.remove("active");
@@ -688,36 +627,43 @@
   }
 
   function autoGrow(ta, popModel) {
-    ta.style.height = "auto";
+   // reset per calcolare bene lo scrollHeight
+   ta.style.height = "auto";
 
-    var computed = window.getComputedStyle(ta);
-    var lineH = parseFloat(computed.lineHeight);
-    if (isNaN(lineH)) {
-      lineH = parseFloat(computed.fontSize) * 1.25 || 18;
-    }
+   // calcolo dell'altezza di UNA riga
+   var computed = window.getComputedStyle(ta);
+   var lineH = parseFloat(computed.lineHeight);
+   if (isNaN(lineH)) {
+     lineH = parseFloat(computed.fontSize) * 1.25 || 18; // fallback
+   }
 
-    var txt = ta.value || "";
-    var needed;
+   var txt = ta.value || "";
+   var needed;
 
-    if (!txt.trim()) {
-      if (popModel && popModel.bigIntro) {
-        needed = lineH * 4;
-      } else {
-        needed = lineH;
-      }
-    } else {
-      needed = ta.scrollHeight;
-      if (needed < lineH) needed = lineH;
-    }
+   if (!txt.trim()) {
+    // POP vuoto
+    if (popModel && popModel.bigIntro) {
+      // solo il PRIMO pop può nascere a 4 righe
+      needed = lineH * 4;
+     } else {
+       // tutti gli altri (e il primo dopo l’uso) = una riga sola
+       needed = lineH;
+     }
+   } else {
+     // c'è testo → altezza minima che permette di leggere tutto
+     needed = ta.scrollHeight;
+     if (needed < lineH) needed = lineH;
+   }
 
-    if (popModel) {
-      popModel.height = needed;
-    }
+   if (popModel) {
+     popModel.height = needed;
+   }
 
-    ta.style.height = needed + "px";
-  }
+   ta.style.height = needed + "px";
+ }
 
-  function createPop(x, y) {
+    function createPop(x, y) {
+    // è il primo POP della mappa?
     var isFirst = (pops.length === 0);
 
     var p = {
@@ -726,17 +672,18 @@
       y: y,
       text: "",
       height: 0,
-      bigIntro: isFirst
+      bigIntro: isFirst   // solo il primo POP nasce a 4 righe
     };
 
     pops.push(p);
     render();
 
+    // 👉 MOSTRA IL SUGGERIMENTO SOLO QUANDO SI CREA UN NUOVO POP
     setStatus("Suggerimento: scrivi un concetto chiave senza articoli o aggettivi (es. SI: Napoleone — NO: il grande Napoleone).");
     selectBox(p.id);
     var el = document.querySelector('[data-id="' + p.id + '"] .body');
     if (el) el.focus();
-  }
+}
 
   function addLink(from, to) {
     if (!from || !to || from === to) return;
@@ -934,21 +881,22 @@
     if (ghost) ghost.style.display = pops.length ? "none" : "flex";
 
     pops.forEach(function (p, idx) {
-      var el = document.createElement("div");
-      el.className = "pop";
-      el.dataset.id = p.id;
-      el.style.left = p.x + "px";
-      el.style.top  = p.y + "px";
+     var el = document.createElement("div");
+     el.className = "pop";
+     el.dataset.id = p.id;
+     el.style.left = p.x + "px";
+     el.style.top  = p.y + "px";
 
-      var placeholderText =
-        'placeholder="Scrivi un concetto chiave senza articoli o aggettivi (SI: NAPOLEONE — NO: Il grande NAPOLEONE)"';
+     // Mostra il placeholder solo per i primi MAX_PLACEHOLDER_POPS
+     var placeholderText =
+    'placeholder="Scrivi un concetto chiave senza articoli o aggettivi (SI: NAPOLEONE — NO: Il grande NAPOLEONE)"';
 
-      var placeholderAttr = (idx < MAX_PLACEHOLDER_POPS) ? placeholderText : "";
+     var placeholderAttr = (idx < MAX_PLACEHOLDER_POPS) ? placeholderText : "";
 
-      el.innerHTML =
-        '<textarea class="body" spellcheck="false" rows="1" ' +
-        placeholderAttr +
-        '></textarea>';
+     el.innerHTML =
+      '<textarea class="body" spellcheck="false" rows="1" ' +
+      placeholderAttr +
+      '></textarea>';
 
       var ta = el.querySelector(".body");
       ta.value = p.text || "";
@@ -967,6 +915,7 @@
       ta.addEventListener("input", function (e) {
         p.text = e.target.value;
 
+        // appena il primo POP viene compilato, perde la modalità "4 righe"
         if (p.bigIntro && p.text.trim() !== "") {
           p.bigIntro = false;
         }
@@ -974,6 +923,7 @@
         autoGrow(ta, p);
         renderLinks();
       });
+
 
       el.addEventListener("click", function () {
         if (linkingFrom && linkingFrom !== p.id) {
@@ -1058,24 +1008,14 @@
     setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
   }
 
-  function exportJSON(customBaseName) {
-    var stateStr = JSON.stringify(getState(), null, 2);
-    var blob = new Blob([stateStr], { type: "application/json;charset=utf-8" });
-
-    var filename;
-    if (customBaseName && customBaseName.trim()) {
-      var base = customBaseName.trim();
-      if (!/\.(json)$/i.test(base)) base += ".json";
-      filename = base;
-    } else {
-      filename = "mappa_" + new Date().toISOString().slice(0,19).split(":").join("-") + ".json";
-    }
-
-    downloadBlob(filename, blob);
-    setStatus("Esportato JSON (" + filename + ").");
+  function exportJSON() {
+    var blob = new Blob([JSON.stringify(getState(), null, 2)], { type: "application/json;charset=utf-8" });
+    var name = "mappa_" + new Date().toISOString().slice(0,19).split(":").join("-") + ".json";
+    downloadBlob(name, blob);
+    setStatus("Esportato JSON.");
   }
 
-  function exportHTML(customBaseName) {
+  function exportHTML() {
     var state = JSON.stringify(getState(), null, 2);
 
     var html =
@@ -1096,18 +1036,9 @@
       '</html>';
 
     var blob = new Blob([html], { type: "text/html;charset=utf-8" });
-
-    var filename;
-    if (customBaseName && customBaseName.trim()) {
-      var base = customBaseName.trim();
-      if (!/\.(html?|htm)$/i.test(base)) base += ".html";
-      filename = base;
-    } else {
-      filename = "mappa_" + new Date().toISOString().slice(0,19).replace(/:/g,'-') + ".html";
-    }
-
-    downloadBlob(filename, blob);
-    setStatus("Esportato HTML (" + filename + ").");
+    var name = "mappa_" + new Date().toISOString().slice(0,19).replace(/:/g,'-') + ".html";
+    downloadBlob(name, blob);
+    setStatus("Esportato HTML.");
   }
   
   function parseImportedText(text) {
@@ -1245,6 +1176,7 @@
     if (pointers.size === 0) panStart = null;
   }, { passive:true });
 
+  /* Zoom con CTRL + rotellina */
   board.addEventListener("wheel", function(e){
     if (!e.ctrlKey) return;
     e.preventDefault();
@@ -1315,17 +1247,19 @@
   });
 
   btnPdf.addEventListener("click", exportPDF);
+  btnExportJson.addEventListener("click", exportJSON);
+  btnExportHtml.addEventListener("click", exportHTML);
   btnImport.addEventListener("click", doImport);
 
   btnZoomIn.addEventListener("click", function(){ zoomAroundCenter(1.15); });
   btnZoomOut.addEventListener("click", function(){ zoomAroundCenter(1/1.15); });
 
-  // Collego i pulsanti flottanti alle stesse azioni
-  if (btnZoomIn_f) btnZoomIn_f.addEventListener("click", function(){ btnZoomIn.click(); });
-  if (btnZoomOut_f) btnZoomOut_f.addEventListener("click", function(){ btnZoomOut.click(); });
-  if (btnPan_f)     btnPan_f.addEventListener("click", function(){ btnPan.click(); });
-  if (btnMove_f)    btnMove_f.addEventListener("click", function(){ btnMove.click(); });
-  if (btnLink_f)    btnLink_f.addEventListener("click", function(){ btnLink.click(); });
+  // Collego i pulsanti flottanti alle stesse azioni dei bottoni originali
+  if (btnZoomIn_f) { btnZoomIn_f.addEventListener("click", function(){ btnZoomIn.click(); }); }
+  if (btnZoomOut_f) { btnZoomOut_f.addEventListener("click", function(){ btnZoomOut.click(); }); }
+  if (btnPan_f) { btnPan_f.addEventListener("click", function(){ btnPan.click(); }); }
+  if (btnMove_f) { btnMove_f.addEventListener("click", function(){ btnMove.click(); }); }
+  if (btnLink_f) { btnLink_f.addEventListener("click", function(){ btnLink.click(); }); }
 
   if (focalTa) {
     focalTa.addEventListener("input", function () {
@@ -1333,7 +1267,7 @@
     });
   }
 
-  // Pannello comandi tastiera
+  /* Apertura/chiusura box "Comandi da tastiera" */
   btnKeyboardHelp.addEventListener("click", function(){
     kbdOverlay.style.display = "flex";
   });
@@ -1345,92 +1279,6 @@
       kbdOverlay.style.display = "none";
     }
   });
-
-  // --- PANNELLO OPZIONI SALVATAGGIO ---
-  function openSaveOverlay() {
-    if (!saveOverlay) return;
-    // preset nome file
-    if (saveFileNameInp) {
-      saveFileNameInp.value = lastSaveBaseName || "";
-    }
-    // preset formato
-    var radios = saveOverlay.querySelectorAll('input[name="saveFormat"]');
-    var current = lastSaveFormat || "json";
-    radios.forEach(function(r){
-      r.checked = (r.value === current);
-    });
-
-    saveOverlay.style.display = "flex";
-    if (saveFileNameInp) {
-      setTimeout(function(){
-        saveFileNameInp.focus();
-        saveFileNameInp.select();
-      }, 50);
-    }
-  }
-
-  function closeSaveOverlay() {
-    if (saveOverlay) saveOverlay.style.display = "none";
-  }
-
-  if (btnSaveOptions) {
-    btnSaveOptions.addEventListener("click", function(){
-      openSaveOverlay();
-    });
-  }
-
-  if (btnSaveCancel) {
-    btnSaveCancel.addEventListener("click", function(){
-      closeSaveOverlay();
-    });
-  }
-
-  if (saveOverlay) {
-    saveOverlay.addEventListener("click", function(e){
-      if (e.target === saveOverlay) {
-        closeSaveOverlay();
-      }
-    });
-  }
-
-  if (btnSaveConfirm) {
-    btnSaveConfirm.addEventListener("click", function(){
-      if (!saveOverlay) return;
-
-      var baseName = (saveFileNameInp && saveFileNameInp.value.trim()) || "";
-      if (!baseName) {
-        baseName = "mappa_concettuale";
-      }
-
-      var radios = saveOverlay.querySelectorAll('input[name="saveFormat"]');
-      var chosen = "json";
-      radios.forEach(function(r){
-        if (r.checked) chosen = r.value;
-      });
-
-      lastSaveBaseName = baseName;
-      lastSaveFormat   = chosen;
-
-      if (chosen === "html") {
-        exportHTML(baseName);
-      } else {
-        exportJSON(baseName);
-      }
-
-      closeSaveOverlay();
-    });
-  }
-
-  // Salva rapido: sempre JSON, riusa il nome dell'ultima volta (se presente)
-  if (btnQuickSave) {
-    btnQuickSave.addEventListener("click", function(){
-      if (lastSaveBaseName) {
-        exportJSON(lastSaveBaseName);
-      } else {
-        exportJSON(null);  // nome con timestamp, come prima
-      }
-    });
-  }
 
   render();
   setStatus("Pronto");
