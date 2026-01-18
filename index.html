@@ -32,6 +32,13 @@
       align-items:center;
       padding:10px 12px;
     }
+    .rightButtons{
+      margin-left:auto;
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+    }
+
     /* Maniglia-cassetto ingrandita con frecce */
     .headerHandle{
       width:100%;
@@ -380,6 +387,45 @@
       border-radius:0 0 10px 10px;
     }
 
+    /* Ottimizzazioni base per schermi piccoli, come file 48 (mappa mentale) */
+    @media (max-width: 768px) {
+      .headerInner {
+        padding:6px 8px;
+        flex-wrap:wrap;
+      }
+
+      #mapTitle {
+        font-size:20px;
+        font-weight:800;
+        letter-spacing:2px;
+        user-select:none;
+        margin-left:6px;
+        flex:1 1 100%;
+      }
+
+      .status{
+        font-size:13px;
+        opacity:.9;
+        white-space:normal;
+        flex:1 1 100%;
+        order:90;
+        margin-top:4px;
+        padding:4px 8px;
+        border-radius:6px;
+        background:#e5e5e5;
+      }
+
+      .btn {
+        font-size:12px;
+        padding:5px 7px;
+        white-space:nowrap;
+      }
+
+      .pop {
+        max-width: 28ch;
+      }
+    }
+
   </style>
 </head>
 
@@ -399,32 +445,34 @@
       <span id="mapTitle">MAPPA CONCETTUALE</span>
 
       <!-- Tutti gli altri tasti -->
-      <button class="btn" id="btnNew">+ Nuovo pop</button>
-      <button class="btn" id="btnMove">Sposta</button>
-      <button class="btn" id="btnLink">Collega</button>
-      <button class="btn danger" id="btnDelete">Elimina</button>
+      <div class="rightButtons">
+        <button class="btn" id="btnNew">+ Nuovo pop</button>
+        <button class="btn" id="btnMove">Sposta</button>
+        <button class="btn" id="btnLink">Collega</button>
+        <button class="btn danger" id="btnDelete">Elimina</button>
 
-      <button class="btn" id="btnPdf">Stampa in PDF</button>
+        <button class="btn" id="btnPdf">Stampa in PDF</button>
 
-      <!-- Pulsante doppio SALVATAGGIO -->
-      <div class="saveSplit">
-        <button class="btn saveTop" id="btnQuickSave">
-          <span>Salva rapido</span>
+        <!-- Pulsante doppio SALVATAGGIO -->
+        <div class="saveSplit">
+          <button class="btn saveTop" id="btnQuickSave">
+            <span>Salva rapido</span>
+          </button>
+          <button class="btn saveBottom" id="btnSaveOptions">
+            <span>Opzioni salvataggio</span>
+          </button>
+        </div>
+
+        <button class="btn" id="btnImport">Importa HTML/JSON</button>
+        <input id="fileInput" type="file" accept=".json,.html" style="display:none" />
+
+        <button class="btn tiny" id="btnZoomIn">+</button>
+        <button class="btn tiny" id="btnZoomOut">-</button>
+        <button class="btn tiny" id="btnPan" title="Pan vista">
+          <span aria-hidden="true">✋</span>
         </button>
-        <button class="btn saveBottom" id="btnSaveOptions">
-          <span>Opzioni salvataggio</span>
-        </button>
+        <button class="btn tiny" id="btnKeyboardHelp">Comandi da tastiera</button>
       </div>
-
-      <button class="btn" id="btnImport">Importa HTML/JSON</button>
-      <input id="fileInput" type="file" accept=".json,.html" style="display:none" />
-
-      <button class="btn tiny" id="btnZoomIn">+</button>
-      <button class="btn tiny" id="btnZoomOut">-</button>
-      <button class="btn tiny" id="btnPan" title="Pan vista">
-        <span aria-hidden="true">✋</span>
-      </button>
-      <button class="btn tiny" id="btnKeyboardHelp">Comandi da tastiera</button>
 
       <!-- Riga di stato come "seconda linea" -->
       <span class="status" id="status">Avvio...</span>
