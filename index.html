@@ -202,7 +202,17 @@
       font-size:14px; opacity:.55;
     }
 
-    /* Controlli flottanti in basso a destra/sinistra */
+    
+    /* Selezione area di stampa */
+    #printSelectionBox{
+      position:absolute;
+      border:2px dashed rgba(0,120,255,.9);
+      background:rgba(0,120,255,.12);
+      pointer-events:none;
+      display:none;
+      z-index:20;
+    }
+/* Controlli flottanti in basso a destra/sinistra */
     #controlsRight {
       position: fixed;
       bottom: var(--controls-bottom);
@@ -262,8 +272,10 @@
     }
 
     @media print {
-      header { display:none !important; }
+      header, #mainHeader, .headerInner, .headerHandle, .rightButtons { display:none !important; }
       .ghost { display:none !important; }
+      #controlsLeft, #controlsRight { display:none !important; }
+      .modalOverlay { display:none !important; }
 
       html, body { height: 100% !important; }
       #app { height: 100% !important; }
@@ -491,6 +503,7 @@
     <div id="world">
       <svg id="wires"></svg>
     </div>
+        <div id="printSelectionBox"></div>
     <div class="ghost">Doppio click sullo sfondo per creare un pop</div>
   </div>
 
@@ -543,6 +556,27 @@
       </div>
     </div>
   </div>
+  <!-- PANNELLO OPZIONI STAMPA -->
+  <div class="modalOverlay" id="printOverlay">
+    <div class="modal">
+      <h3>Stampa mappa</h3>
+      <p style="font-size:14px; line-height:1.4; margin:6px 0 10px;">
+        Verrà stampata solo la <b>mappa</b> con la <b>domanda focale</b> in testa.<br>
+        Usare i tasti in basso a destra (+;-;pan) per centrare la mappa nel file di stampa.
+      </p>
+      <div class="row">
+        <label style="font-size:14px;">
+          <input type="radio" name="printScope" value="map" checked>
+          Stampa mappa concettuale e domanda focale
+        </label>
+      </div>
+      <div class="actions">
+        <button class="btn tiny" id="btnPrintCancel">Annulla</button>
+        <button class="btn tiny" id="btnPrintConfirm">Vai alla stampa</button>
+      </div>
+    </div>
+  </div>
+
 
   <!-- Nuovi controlli flottanti fissi in basso -->
   <div id="controlsLeft">
@@ -603,6 +637,10 @@
   var saveFileNameInp = document.getElementById("saveFileName");
   var btnSaveCancel   = document.getElementById("btnSaveCancel");
   var btnSaveConfirm  = document.getElementById("btnSaveConfirm");
+  // Pannello stampa
+  var printOverlay   = document.getElementById("printOverlay");
+  var btnPrintCancel = document.getElementById("btnPrintCancel");
+  var btnPrintConfirm= document.getElementById("btnPrintConfirm");
 
   // stato ultimo salvataggio
   var lastSaveBaseName = "";
@@ -1374,6 +1412,63 @@
   }, { passive:false });
 
   board.addEventListener("mousedown", function (e) {
+    // Se siamo in modalità selezione stampa, intercettiamo il drag
+    if (isSelectingPrintArea) {
+      var r = boardRect();
+      var startX = e.clientX - r.left;
+      var startY = e.clientY - r.top;
+
+      if (!printSelectionBox) return;
+
+      printSelectionBox.style.display = "block";
+      printSelectionBox.style.left = startX + "px";
+      printSelectionBox.style.top = startY + "px";
+      printSelectionBox.style.width = "0px";
+      printSelectionBox.style.height = "0px";
+
+      function onMove(ev){
+        var currX = ev.clientX - r.left;
+        var currY = ev.clientY - r.top;
+        var x = Math.min(startX, currX);
+        var y = Math.min(startY, currY);
+        var w = Math.abs(currX - startX);
+        var h = Math.abs(currY - startY);
+        printSelectionBox.style.left = x + "px";
+        printSelectionBox.style.top = y + "px";
+        printSelectionBox.style.width = w + "px";
+        printSelectionBox.style.height = h + "px";
+      }
+
+      function onUp(ev){
+        document.removeEventListener("mousemove", onMove);
+        document.removeEventListener("mouseup", onUp);
+
+        var endX = ev.clientX - r.left;
+        var endY = ev.clientY - r.top;
+        var x = Math.min(startX, endX);
+        var y = Math.min(startY, endY);
+        var w = Math.abs(endX - startX);
+        var h = Math.abs(endY - startY);
+
+        if (w < 10 || h < 10) {
+          // selezione troppo piccola → annulla
+          printSelectionRect = null;
+          if (printSelectionBox) printSelectionBox.style.display = "none";
+          setStatus("Selezione troppo piccola, riprova.");
+        } else {
+          printSelectionRect = { left:x, top:y, width:w, height:h };
+          setStatus("Area di stampa selezionata. Premi di nuovo Stampa in PDF per andare alla stampa.");
+        }
+
+        isSelectingPrintArea = false;
+      }
+
+      document.addEventListener("mousemove", onMove);
+      document.addEventListener("mouseup", onUp);
+
+      return;
+    }
+
     if (e.target === board) {
       clearSelections();
       setLinkMode(false);
@@ -1419,7 +1514,13 @@
     setPanMode(newOn);
   });
 
-  btnPdf.addEventListener("click", exportPDF);
+  btnPdf.addEventListener("click", function(){
+    if (printOverlay) {
+      printOverlay.style.display = "flex";
+    } else {
+      exportPDF();
+    }
+  });
   btnImport.addEventListener("click", doImport);
 
   btnZoomIn.addEventListener("click", function(){ zoomAroundCenter(1.15); });
@@ -1498,6 +1599,19 @@
     });
   }
 
+  // Gestione pannello stampa
+  if (btnPrintCancel && printOverlay) {
+    btnPrintCancel.addEventListener("click", function(){
+      printOverlay.style.display = "none";
+    });
+  }
+  if (btnPrintConfirm && printOverlay) {
+    btnPrintConfirm.addEventListener("click", function(){
+      printOverlay.style.display = "none";
+      exportPDF();
+    });
+  }
+
   if (btnSaveConfirm) {
     btnSaveConfirm.addEventListener("click", function(){
       if (!saveOverlay) return;
@@ -1570,6 +1684,22 @@
 
     adjustForKeyboard();
   }
+  // Ripristina clipPath dopo la stampa
+  if (typeof window !== "undefined") {
+    window.addEventListener("afterprint", function(){
+      if (world && world.dataset && typeof world.dataset._oldClipPath !== "undefined") {
+        world.style.clipPath = world.dataset._oldClipPath;
+        delete world.dataset._oldClipPath;
+      }
+      if (printSelectionBox) {
+        printSelectionBox.style.display = "none";
+      }
+      printSelectionRect = null;
+      isSelectingPrintArea = false;
+      setStatus("Pronto");
+    });
+  }
+
 })();
 </script>
 </body>
