@@ -82,7 +82,17 @@
       box-shadow:0 0 0 2px rgba(0,120,255,.22);
     }
 
-    .status{ font-size:13px; opacity:.9; white-space:nowrap; }
+    .status{
+      font-size:13px;
+      opacity:.9;
+      flex: 1 1 100%;
+      order: 99;
+      margin-top: 4px;
+      padding: 4px 8px;
+      border-radius: 8px;
+      background:#f3f4ff;
+      box-sizing:border-box;
+    }
 
     .focalQuestionTa{
       width:260px;
@@ -294,16 +304,17 @@
     }
 
     #mapTitle {
-      margin-left: auto;
       font-size: 22px;
       font-weight: 800;
       letter-spacing: 2px;
       user-select: none;
+      margin-left: 8px;
+      flex: 1 1 auto;
     }
 
     /* --- LOGO/LINK ALLA HOME ANTIMAPPIFICIO --- */
     .homeLogo{
-      margin-left: 10px;
+      margin-left: 0;
       text-decoration: none;
     }
     .homeLogo .logoLetters{
@@ -374,9 +385,20 @@
 
 <body>
 <div id="app">
-    
+
   <header id="mainHeader">
     <div class="headerInner">
+      <!-- Logo prima -->
+      <a class="homeLogo"
+         href="https://sptzetaevi.github.io/antimappificio/"
+         title="Torna alla pagina principale ANTIMAPPIFICIO">
+        <span class="logoLetters">A&nbsp;M</span>
+      </a>
+
+      <!-- Titolo subito dopo il logo -->
+      <span id="mapTitle">MAPPA CONCETTUALE</span>
+
+      <!-- Tutti gli altri tasti -->
       <button class="btn" id="btnNew">+ Nuovo pop</button>
       <button class="btn" id="btnMove">Sposta</button>
       <button class="btn" id="btnLink">Collega</button>
@@ -404,15 +426,8 @@
       </button>
       <button class="btn tiny" id="btnKeyboardHelp">Comandi da tastiera</button>
 
+      <!-- Riga di stato come "seconda linea" -->
       <span class="status" id="status">Avvio...</span>
-      <span id="mapTitle">MAPPA CONCETTUALE</span>
-
-      <!-- LOGO/LINK ALLA PAGINA PRINCIPALE -->
-      <a class="homeLogo"
-         href="https://sptzetaevi.github.io/antimappificio/"
-         title="Torna alla pagina principale ANTIMAPPIFICIO">
-        <span class="logoLetters">A&nbsp;M</span>
-      </a>
     </div>
     <div class="headerHandle" id="headerHandle" title="Mostra/nascondi strumenti"></div>
   </header>
@@ -562,13 +577,13 @@
   var camX = 0;
   var camY = 0;
   var camS = 1;
-  
+
   var MAX_PLACEHOLDER_POPS = 1;
 
   // Messaggio con suggerimento per il verbo del collegamento
   var linkLabelPromptMsg =
-    "Etichetta del collegamento:\\n\\n" +
-    "Scrivi qui un verbo che collega i due concetti.\\n" +
+    "Etichetta del collegamento:\n\n" +
+    "Scrivi qui un verbo che collega i due concetti.\n" +
     "Nelle mappe concettuali il verbo dovrebbe essere all’indicativo presente (es. considera, organizza, diventa...).";
 
   function applyCamera(){
@@ -1150,7 +1165,7 @@
     downloadBlob(filename, blob);
     setStatus("Esportato HTML (" + filename + ").");
   }
-  
+
   function parseImportedText(text) {
     var t = (text || "").trim();
 
@@ -1342,7 +1357,7 @@
     var w = screenToWorld(cx, cy);
     createPop(w.x, w.y);
   });
-  
+
   btnLink.addEventListener("click", function () { setLinkMode(!linkingFrom); });
   btnDelete.addEventListener("click", deleteSelected);
   btnMove.addEventListener("click", function () { setMoveMode(!moveMode); });
