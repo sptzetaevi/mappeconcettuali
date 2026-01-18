@@ -728,7 +728,7 @@
 
       var b = document.querySelectorAll(".pop");
       for (var j=0;j<b.length;j++) b[j].classList.remove("linking");
-      setStatus("Pronto");
+      setStatus("rispondi alla domanda che hai scritto, collegando le parole "concetto" con dei "verbi" che fanno capire la loro relazione (es NAPOLEONE  -  conquista  - EUROPA)");
     }
   }
 
@@ -744,7 +744,7 @@
     } else {
       btnMove.classList.remove("active");
       if (btnMove_f) btnMove_f.classList.remove("active");
-      setStatus("Pronto");
+      setStatus("rispondi alla domanda che hai scritto, collegando le parole "concetto" con dei "verbi" che fanno capire la loro relazione (es NAPOLEONE  -  conquista  - EUROPA)");
     }
 
     var tas = document.querySelectorAll(".pop .body");
@@ -762,7 +762,7 @@
     } else {
       btnPan.classList.remove("active");
       if (btnPan_f) btnPan_f.classList.remove("active");
-      setStatus("Pronto.");
+      setStatus("rispondi alla domanda che hai scritto, collegando le parole "concetto" con dei "verbi" che fanno capire la loro relazione (es NAPOLEONE  -  conquista  - EUROPA).");
     }
   }
 
@@ -980,7 +980,7 @@
 
           renderLinks();
           clearSelections();
-          setStatus("Pronto");
+          setStatus("rispondi alla domanda che hai scritto, collegando le parole "concetto" con dei "verbi" che fanno capire la loro relazione (es NAPOLEONE  -  conquista  - EUROPA)");
         });
 
         svg.appendChild(txt);
@@ -1377,7 +1377,7 @@
     if (e.target === board) {
       clearSelections();
       setLinkMode(false);
-      setStatus("Pronto");
+      setStatus("rispondi alla domanda che hai scritto, collegando le parole "concetto" con dei "verbi" che fanno capire la loro relazione (es NAPOLEONE  -  conquista  - EUROPA)");
     }
   });
 
@@ -1538,7 +1538,7 @@
   }
 
   render();
-  setStatus("Pronto");
+  setStatus("rispondi alla domanda che hai scritto, collegando le parole "concetto" con dei "verbi" che fanno capire la loro relazione (es NAPOLEONE  -  conquista  - EUROPA)");
 
   /* --- ADATTAMENTO CONTROLLI FLOTTANTI CON TASTIERA MOBILE --- */
   if (window.visualViewport) {
