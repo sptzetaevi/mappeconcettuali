@@ -102,8 +102,8 @@
     }
 
     .focalQuestionTa{
-      width:260px;
-      height:62px;
+      width:360px;
+      height:44px;
       resize:vertical;
       font-size:13px;
       padding:8px;
@@ -322,14 +322,9 @@
       }
     }
 
-    #mapTitle {
-      font-size: 22px;
-      font-weight: 800;
-      letter-spacing: 2px;
-      user-select: none;
-      margin-left: 8px;
-      flex: 1 1 auto;
-    }
+    #mapTitle { font-weight:800; letter-spacing:2px; user-select:none; margin-left:8px; flex:1 1 auto; }
+    #mapTitle .mapWord { font-size:16px; }
+    #mapTitle .mentalWord { font-size:22px; }
 
     /* --- LOGO/LINK ALLA HOME ANTIMAPPIFICIO --- */
     .homeLogo{
@@ -380,63 +375,29 @@
     .modal .row{ display:flex; flex-wrap:wrap; gap:10px; margin:8px 0; }
     .modal .row label{ display:flex; align-items:center; gap:6px; font-size:14px; }
 
-    /* Pulsante doppio Salva rapido / Opzioni salvataggio */
-    .saveSplit{
+    /* Pulsante doppio Salva  / Salva con nome */
+    .tripleSplit{
       display:inline-flex;
-      flex-direction:column;
+      flex-direction:row;
       margin:0 6px;
     }
-    .saveSplit .btn{
+    .tripleSplit .btn{
       padding:4px 10px;
       font-size:12px;
       border-radius:0;
     }
-    .saveSplit .btn.saveTop{
-      border-radius:10px 10px 0 0;
-      border-bottom-width:0;
+    .tripleSplit .btn.tripleLeft{
+      border-radius:10px 0 0 10px;
     }
-    .saveSplit .btn.saveBottom{
-      border-radius:0 0 10px 10px;
-    }
-
-    /* Ottimizzazioni base per schermi piccoli, come file 48 (mappa mentale) */
-    @media (max-width: 768px) {
-      .headerInner {
-        padding:6px 8px;
-        flex-wrap:wrap;
-      }
-
-      #mapTitle {
-        font-size:20px;
-        font-weight:800;
-        letter-spacing:2px;
-        user-select:none;
-        margin-left:6px;
-        flex:1 1 100%;
-      }
-
-      .status{
-        font-size:13px;
-        opacity:.9;
-        white-space:normal;
-        flex:1 1 100%;
-        order:90;
-        margin-top:4px;
-        padding:4px 8px;
-        border-radius:6px;
-        background:#e5e5e5;
-      }
-
-      .btn {
-        font-size:12px;
-        padding:5px 7px;
-        white-space:nowrap;
-      }
-
-      .pop {
-        max-width: 28ch;
-      }
-    }
+    .tripleSplit .btn.tripleCenter{
+  border-radius:0;
+  border-left:1px solid rgba(0,0,0,.18);
+  border-right:1px solid rgba(0,0,0,.18);
+}
+    .tripleSplit .btn.tripleRight{
+  border-radius:0 10px 10px 0;
+  border-left:1px solid rgba(0,0,0,.18);
+}
 
   </style>
 </head>
@@ -454,7 +415,7 @@
       </a>
 
       <!-- Titolo subito dopo il logo -->
-      <span id="mapTitle">MAPPA CONCETTUALE</span>
+      <span id="mapTitle"><span class="mapWord">MAPPA</span> <span class="mentalWord">CONCETTUALE</span></span>
 
       <!-- Tutti gli altri tasti -->
       <div class="rightButtons">
@@ -466,16 +427,19 @@
         <button class="btn" id="btnPdf">Stampa in PDF</button>
 
         <!-- Pulsante doppio SALVATAGGIO -->
-        <div class="saveSplit">
-          <button class="btn saveTop" id="btnQuickSave">
-            <span>Salva rapido</span>
+        <div class="tripleSplit">
+          <button class="btn tripleLeft" id="btnQuickSave">
+            <span>Salva </span>
           </button>
-          <button class="btn saveBottom" id="btnSaveOptions">
-            <span>Opzioni salvataggio</span>
+          <button class="btn tripleCenter" id="btnSaveOptions">
+            <span>Salva con nome</span>
+          </button>
+          <button class="btn tripleRight" id="btnImport">
+            <span>Apri...</span>
           </button>
         </div>
 
-        <button class="btn" id="btnImport">Importa HTML/JSON</button>
+        
         <input id="fileInput" type="file" accept=".json,.html" style="display:none" />
 
         <button class="btn tiny" id="btnZoomIn">+</button>
@@ -483,7 +447,7 @@
         <button class="btn tiny" id="btnPan" title="Pan vista">
           <span aria-hidden="true">✋</span>
         </button>
-        <button class="btn tiny" id="btnKeyboardHelp">Comandi da tastiera</button>
+        <button class="btn tiny" id="btnKeyboardHelp">Info e comandi</button>
       </div>
 
       <!-- Riga di stato come "seconda linea" -->
@@ -507,10 +471,10 @@
     <div class="ghost">Doppio click sullo sfondo per creare un pop</div>
   </div>
 
-  <!-- BOX COMANDI DA TASTIERA -->
+  <!-- BOX Info e comandi -->
   <div class="modalOverlay" id="kbdOverlay">
     <div class="modal">
-      <h3>Comandi da tastiera</h3>
+      <h3>Info e comandi</h3>
       <p style="font-size:14px; line-height:1.4; margin:6px 0 10px;">
         • Doppio click sullo sfondo = crea box<br>
         • Modalità Pan attiva + trascina sfondo = sposta vista<br>
@@ -526,7 +490,7 @@
     </div>
   </div>
 
-  <!-- PANNELLO OPZIONI SALVATAGGIO -->
+  <!-- PANNELLO Salva con nome -->
   <div class="modalOverlay" id="saveOverlay">
     <div class="modal">
       <h3>Opzioni di salvataggio</h3>
@@ -1541,7 +1505,7 @@
     });
   }
 
-  /* Apertura/chiusura box "Comandi da tastiera" */
+  /* Apertura/chiusura box "Info e comandi" */
   btnKeyboardHelp.addEventListener("click", function(){
     kbdOverlay.style.display = "flex";
   });
@@ -1554,7 +1518,7 @@
     }
   });
 
-  // --- PANNELLO OPZIONI SALVATAGGIO ---
+  // --- PANNELLO Salva con nome ---
   function openSaveOverlay() {
     if (!saveOverlay) return;
     // preset nome file
@@ -1642,7 +1606,7 @@
     });
   }
 
-  // Salva rapido: sempre JSON, riusa il nome dell'ultima volta (se presente)
+  // Salva : sempre JSON, riusa il nome dell'ultima volta (se presente)
   if (btnQuickSave) {
     btnQuickSave.addEventListener("click", function(){
       if (lastSaveBaseName) {
