@@ -819,7 +819,7 @@
     render();
 
     // 👉 MOSTRA IL SUGGERIMENTO SOLO QUANDO SI CREA UN NUOVO POP
-    setStatus("Suggerimento: scrivi un concetto chiave senza articoli o aggettivi (es. SI: Napoleone — NO: il grande Napoleone).");
+    setStatus("Suggerimento: collega un nuovo concetto.");
     selectBox(p.id);
     var el = document.querySelector('[data-id="' + p.id + '"] .body');
     if (el) el.focus();
@@ -1538,7 +1538,7 @@
   }
 
   render();
-  setStatus("Pronto");
+  setStatus("Suggerimento: rispondi alla domanda che hai scritto, collegando le parole \"concetto\" con dei \"verbi\" che fanno capire la loro relazione (es. NAPOLEONE - conquista - EUROPA).");
 
   /* --- ADATTAMENTO CONTROLLI FLOTTANTI CON TASTIERA MOBILE --- */
   if (window.visualViewport) {
