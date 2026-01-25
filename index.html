@@ -675,9 +675,8 @@
     renderLinks();
   }
 
+  // Nessun vincolo rigido: spazio di lavoro libero
   function clampToBoard(x, y) {
-    if (x < 8) x = 8;
-    if (y < 8) y = 8;
     return { x:x, y:y };
   }
 
@@ -1354,6 +1353,32 @@
     if (pointers.size < 2) pinchStartDist = 0;
     if (pointers.size === 0) panStart = null;
   }, { passive:true });
+
+  // Doppio tap su dispositivi touch (es. iPhone) per creare un box
+  var lastTap = { time: 0, x: 0, y: 0 };
+  board.addEventListener("pointerup", function(e){
+    if (e.pointerType !== "touch") return;
+    if (panMode || moveMode) return;
+    if (e.target.closest(".pop")) return;
+
+    var now = Date.now();
+    var dt = now - lastTap.time;
+    var dx = e.clientX - lastTap.x;
+    var dy = e.clientY - lastTap.y;
+    var dist2 = dx*dx + dy*dy;
+
+    if (dt < 350 && dist2 < (40*40)) {
+      var p = screenToWorld(e.clientX, e.clientY);
+      var pos = clampToBoard(p.x, p.y);
+      createPop(pos.x, pos.y);
+      lastTap.time = 0;
+    } else {
+      lastTap.time = now;
+      lastTap.x = e.clientX;
+      lastTap.y = e.clientY;
+    }
+  });
+
 
   /* Zoom con CTRL + rotellina */
   board.addEventListener("wheel", function(e){
